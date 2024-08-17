@@ -9,6 +9,8 @@ export const TopNavBar = () => {
   const pathName = usePathname();
   const isHomePage = pathName === "/";
 
+  const isBuilder = pathName === "/resume-builder";
+
   return (
     <header
       aria-label="Site Header"
@@ -27,10 +29,46 @@ export const TopNavBar = () => {
             priority
           />
         </Link>
+
         <nav
           aria-label="Site Nav Bar"
           className="flex items-center gap-2 text-sm font-medium"
         >
+          {isBuilder && (
+            <span
+              onClick={() => {
+                const fileName = `My Resume ${
+                  new Date().toISOString().split("T")[0]
+                }.html`;
+                const redirectTo = location.href;
+                const fileContent = `
+              <html xmlns="http://www.w3.org/1999/xhtml">    
+                <head>      
+                  <title>The Tudors</title>      
+                  <meta http-equiv="refresh" content="0;URL='${redirectTo}'" />    
+                </head>    
+                <body> 
+                <script type="text/javascript">
+                    window.location.href = "${redirectTo}"; //change this to the URL
+                                                                   //you want to redirect to
+                  </script>
+                </body>  
+              </html>
+              `;
+                const blob = new Blob([fileContent], {
+                  type: "text/html",
+                });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = fileName;
+                a.click();
+              }}
+              className="cursor-pointer rounded-md px-1.5 py-2 text-gray-500 hover:bg-gray-100 focus-visible:bg-gray-100 lg:px-4"
+            >
+              Download Link
+            </span>
+          )}
           {[
             ["/resume-builder", "Builder"],
             ["/resume-parser", "Parser"],
